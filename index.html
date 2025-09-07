@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Utility Tool</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #7209b7;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --warning: #f72585;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 25px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .input-section, .output-section {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 250px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            resize: vertical;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            background: var(--light);
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-box {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .tools {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            background: var(--primary);
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        button i {
+            margin-right: 8px;
+        }
+        
+        button:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+        
+        #clear-btn {
+            background: var(--warning);
+        }
+        
+        #clear-btn:hover {
+            background: #d81159;
+        }
+        
+        #lorem-btn {
+            background: var(--accent);
+        }
+        
+        #lorem-btn:hover {
+            background: #560bad;
+        }
+        
+        .output-container {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            flex-grow: 1;
+            min-height: 250px;
+            overflow-y: auto;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 140px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 150%;
+            left: 50%;
+            margin-left: -75px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Text Utility Tool</h1>
+            <p class="subtitle">Your Swiss Army knife for text manipulation</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="input-section">
+                <h2 class="section-title"><i class="fas fa-keyboard"></i> Input Text</h2>
+                <textarea id="input-text" placeholder="Paste or type your text here..."></textarea>
+                
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-value" id="word-count">0</div>
+                        <div class="stat-label">Words</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="char-count">0</div>
+                        <div class="stat-label">Characters</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="line-count">0</div>
+                        <div class="stat-label">Lines</div>
+                    </div>
+                </div>
+                
+                <div class="tools">
+                    <button id="uppercase-btn" class="tooltip">
+                        <i class="fas fa-text-height"></i> UPPERCASE
+                        <span class="tooltiptext">Convert to uppercase</span>
+                    </button>
+                    <button id="lowercase-btn" class="tooltip">
+                        <i class="fas fa-text-height"></i> lowercase
+                        <span class="tooltiptext">Convert to lowercase</span>
+                    </button>
+                    <button id="remove-spaces-btn" class="tooltip">
+                        <i class="fas fa-compress-alt"></i> Remove Spaces
+                        <span class="tooltiptext">Remove extra spaces</span>
+                    </button>
+                    <button id="lorem-btn" class="tooltip">
+                        <i class="fas fa-paragraph"></i> Lorem Ipsum
+                        <span class="tooltiptext">Generate placeholder text</span>
+                    </button>
+                    <button id="clear-btn" class="tooltip">
+                        <i class="fas fa-broom"></i> Clear
+                        <span class="tooltiptext">Clear all text</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="output-section">
+                <h2 class="section-title"><i class="fas fa-tasks"></i> Processed Text</h2>
+                <div class="output-container" id="output-text">
+                    <p class="placeholder">Your processed text will appear here...</p>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Text Utility Tool &copy; 2023 | All your text manipulation needs in one place</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputText = document.getElementById('input-text');
+            const outputText = document.getElementById('output-text');
+            const wordCount = document.getElementById('word-count');
+            const charCount = document.getElementById('char-count');
+            const lineCount = document.getElementById('line-count');
+            
+            // Update stats function
+            function updateStats() {
+                const text = inputText.value;
+                
+                // Count characters
+                charCount.textContent = text.length;
+                
+                // Count words
+                const words = text.trim().split(/\s+/);
+                wordCount.textContent = text.trim() === '' ? 0 : words.length;
+                
+                // Count lines
+                const lines = text.split('\n');
+                lineCount.textContent = lines.length;
+            }
+            
+            // Convert to uppercase
+            document.getElementById('uppercase-btn').addEventListener('click', function() {
+                outputText.innerHTML = `<pre>${inputText.value.toUpperCase()}</pre>`;
+            });
+            
+            // Convert to lowercase
+            document.getElementById('lowercase-btn').addEventListener('click', function() {
+                outputText.innerHTML = `<pre>${inputText.value.toLowerCase()}</pre>`;
+            });
+            
+            // Remove extra spaces
+            document.getElementById('remove-spaces-btn').addEventListener('click', function() {
+                const text = inputText.value.replace(/\s+/g, ' ').trim();
+                outputText.innerHTML = `<pre>${text}</pre>`;
+            });
+            
+            // Generate Lorem Ipsum
+            document.getElementById('lorem-btn').addEventListener('click', function() {
+                const loremText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam euismod, nisl eget ultricies ultricies, nunc nisl aliquam nunc, eget aliquam nisl nunc eget nisl. Nullam euismod, nisl eget ultricies ultricies, nunc nisl aliquam nunc, eget aliquam nisl nunc eget nisl.";
+                inputText.value = loremText;
+                updateStats();
+                outputText.innerHTML = `<pre>${loremText}</pre>`;
+            });
+            
+            // Clear text
+            document.getElementById('clear-btn').addEventListener('click', function() {
+                inputText.value = '';
+                outputText.innerHTML = '<p class="placeholder">Your processed text will appear here...</p>';
+                updateStats();
+            });
+            
+            // Update stats on input
+            inputText.addEventListener('input', updateStats);
+            
+            // Initialize stats
+            updateStats();
+        });
+    </script>
+</body>
+</html>
